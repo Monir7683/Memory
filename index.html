@@ -419,6 +419,75 @@ document.getElementById("answer").addEventListener("keydown", function(event) {
 })();
 </script>
 
+<section id="admin-panel" style="
+  display:none;
+  position:fixed; inset:0; z-index:100000;
+  overflow:auto; background:#090b16;
+  color:white; padding:25px;
+  font-family:Arial,sans-serif;
+">
+  <h1>PROJECT UNKNOWN — ADMIN</h1>
+  <p>Private administrator dashboard</p>
+
+  <h2 id="visitor-count">Registered visitors: Loading...</h2>
+  <h2 id="visit-count">Recorded visits: Loading...</h2>
+  <h2>Visitors</h2>
+  <div id="visitor-list">Loading...</div>
+
+  <h2>Reviews</h2>
+  <div id="review-list">Loading...</div>
+
+  <button onclick="document.getElementById('admin-panel').style.display='none'">
+    Close admin panel
+  </button>
+</section>
+
+<script>
+(async function () {
+  const panel = document.getElementById("admin-panel");
+
+  const { data: { session } } =
+    await supabaseClient.auth.getSession();
+
+  if (!session) return;
+
+  const { data: isAdmin, error: adminError } =
+    await supabaseClient.rpc("is_admin");
+
+  if (adminError || !isAdmin) return;
+
+  panel.style.display = "block";
+
+  const { data: visitors } =
+    await supabaseClient.from("visitors").select("*");
+
+  const { data: visits } =
+    await supabaseClient.from("visits").select("*");
+
+  const { data: reviews } =
+    await supabaseClient.from("reviews").select("*");
+
+  document.getElementById("visitor-count").textContent =
+    "Registered visitors: " + (visitors?.length || 0);
+
+  document.getElementById("visit-count").textContent =
+    "Recorded visits: " + (visits?.length || 0);
+
+  document.getElementById("visitor-list").textContent =
+    visitors?.map(v => v.email || "No email").join("\n") ||
+    "No visitors yet.";
+
+  document.getElementById("visitor-list").style.whiteSpace = "pre-wrap";
+
+  document.getElementById("review-list").textContent =
+    reviews?.map(r =>
+      "Rating: " + r.rating + "/5\n" +
+      "Review: " + r.review_text + "\n" +
+      "User ID: " + r.user_id
+    ).join("\n\n") || "No reviews yet.";
+})();
+</script>
+
 
 </body>
 </html>

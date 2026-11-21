@@ -1,91 +1,85 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Memory Challenge</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PROJECT UNKNOWN</title>
 
 <style>
-* {
-  box-sizing: border-box;
-}
+* { box-sizing: border-box; }
 
 body {
   margin: 0;
-  font-family: Arial, sans-serif;
-  background: #111827;
-}
-
-#normal {
   min-height: 100vh;
+  background: #080a13;
+  color: white;
+  font-family: Arial, sans-serif;
   display: flex;
   justify-content: center;
   align-items: center;
   padding: 20px;
-  background: linear-gradient(135deg, #667eea, #764ba2);
-  color: white;
-  text-align: center;
 }
 
 .card {
   width: 100%;
-  max-width: 480px;
+  max-width: 460px;
+  background: #151827;
+  border: 1px solid #292e45;
+  border-radius: 18px;
   padding: 35px 25px;
-  background: rgba(255,255,255,0.15);
-  border: 1px solid rgba(255,255,255,0.25);
-  border-radius: 24px;
-  box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+  text-align: center;
+  box-shadow: 0 15px 60px #0008;
 }
 
 h1 {
   font-size: 32px;
+  letter-spacing: 2px;
 }
 
-#sequence {
-  font-size: 40px;
-  letter-spacing: 8px;
-  margin: 25px 0;
+p {
+  color: #b8bdd0;
+  line-height: 1.6;
 }
 
 button {
-  padding: 14px 25px;
+  width: 100%;
+  padding: 16px;
+  margin-top: 15px;
   border: none;
-  border-radius: 12px;
-  background: #ffcc00;
-  color: #222;
+  border-radius: 10px;
+  background: #7655ff;
+  color: white;
   font-size: 17px;
   font-weight: bold;
   cursor: pointer;
-  margin: 8px;
 }
 
 button:hover {
-  transform: scale(1.04);
+  background: #9278ff;
 }
 
 input {
   width: 100%;
-  max-width: 260px;
-  padding: 14px;
-  border: none;
+  padding: 16px;
   border-radius: 10px;
-  font-size: 20px;
+  border: 1px solid #444b68;
+  background: #090c18;
+  color: white;
+  font-size: 22px;
   text-align: center;
+  margin-top: 15px;
 }
 
-#gamePanel {
-  display: none;
+#sequence {
+  font-size: 42px;
+  letter-spacing: 12px;
+  font-weight: bold;
+  margin: 30px 0;
 }
 
-#countdown {
+#timer {
+  color: #a995ff;
   font-size: 20px;
-  font-weight: bold;
-}
-
-#result {
-  min-height: 25px;
-  font-weight: bold;
 }
 
 #scare {
@@ -94,400 +88,124 @@ input {
   inset: 0;
   background: black;
   z-index: 10;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  padding: 20px;
 }
 
-#ghostImage {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  animation: ghostAppear .18s ease-out;
+#ghost {
+  max-width: 100%;
+  max-height: 65vh;
+  object-fit: contain;
 }
 
-#replay {
-  display: none;
-  position: fixed;
-  bottom: 35px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 20;
-  background: black;
+#scare h1 {
   color: white;
-  border: 1px solid white;
-}
-
-@keyframes ghostAppear {
-  from {
-    transform: scale(.2);
-    opacity: 0;
-  }
-  to {
-    transform: scale(1);
-    opacity: 1;
-  }
-}
-
-.flash {
-  animation: flash .12s 3;
-}
-
-@keyframes flash {
-  50% { background: white; }
+  font-size: 30px;
 }
 </style>
 </head>
 
 <body>
 
-<div id="normal">
-  <div class="card">
+<div class="card" id="welcome">
+  <h1>PROJECT UNKNOWN</h1>
+  <p>Think carefully. Remember the numbers.</p>
+  <button onclick="startGame()">START GAME</button>
+</div>
 
-    <div id="welcome">
-      <h1>🧠 Memory Challenge</h1>
-      <p>Test your memory and concentration!</p>
-      <p>Remember the numbers and enter them correctly.</p>
-      <button onclick="startGame()">Start Game</button>
-    </div>
-
-    <div id="gamePanel">
-      <h1>Memory Test</h1>
-      <p>Remember this sequence:</p>
-
-      <h2 id="sequence">4 - 8 - 2 - 9</h2>
-
-      <p id="countdown">Time left: 30</p>
-
-      <input
-        id="answer"
-        type="text"
-        inputmode="numeric"
-        placeholder="Enter the numbers"
-        autocomplete="off"
-      >
-
-      <br>
-
-      <button onclick="checkAnswer()">Submit</button>
-
-      <p id="result"></p>
-    </div>
-
-  </div>
+<div class="card" id="game" style="display:none">
+  <h1>MEMORY CHALLENGE</h1>
+  <p>Memorize this number before it disappears.</p>
+  <div id="sequence">4829</div>
+  <p id="timer">Remember it...</p>
+  <input id="answer" type="text"
+    inputmode="numeric"
+    maxlength="4"
+    placeholder="Enter the number">
+  <button onclick="checkAnswer()">SUBMIT ANSWER</button>
+  <p id="message"></p>
 </div>
 
 <div id="scare">
-  <img id="ghostImage" src="ghost.jpg" alt="">
+  <img id="ghost" src="ghost.jpg" alt="Ghost">
+  <h1>YOU FOUND IT.</h1>
+  <button id="again" style="display:none;max-width:300px"
+    onclick="resetGame()">TRY AGAIN</button>
 </div>
 
-<button id="replay" onclick="restart()">Try Again</button>
+<audio id="scream" src="scream.mp3" preload="auto"></audio>
 
 <script>
-let triggered = false;
-let timer;
-let hideTimer;
-let countdownTimer;
-let timeLeft = 30;
-let audioContext;
-let screamBuffer = null;
-
-const sequence = "4829";
-
-async function prepareScream() {
-  try {
-    const AudioContextClass =
-      window.AudioContext || window.webkitAudioContext;
-
-    if (!audioContext) {
-      audioContext = new AudioContextClass();
-    }
-
-    await audioContext.resume();
-
-    const response = await fetch("scream.mp3");
-    if (!response.ok) throw new Error("Sound file not found");
-
-    const data = await response.arrayBuffer();
-    screamBuffer = await audioContext.decodeAudioData(data);
-
-  } catch (error) {
-    console.log("Audio preparation failed:", error);
-  }
-}
-
-function makeScream() {
-  if (audioContext && screamBuffer) {
-    const source = audioContext.createBufferSource();
-    const volume = audioContext.createGain();
-
-    source.buffer = screamBuffer;
-    volume.gain.value = 1.0;
-
-    source.connect(volume);
-    volume.connect(audioContext.destination);
-
-    source.start(0);
-  }
-}
+let countdown;
+let seconds = 30;
 
 function startGame() {
-  triggered = false;
-
   document.getElementById("welcome").style.display = "none";
-  document.getElementById("gamePanel").style.display = "block";
+  document.getElementById("game").style.display = "block";
 
-  document.getElementById("sequence").textContent = "4 - 8 - 2 - 9";
+  document.getElementById("sequence").textContent = "4829";
   document.getElementById("answer").value = "";
-  document.getElementById("result").textContent = "";
+  document.getElementById("message").textContent = "";
 
-  timeLeft = 30;
-  document.getElementById("countdown").textContent =
-    "Time left: " + timeLeft;
-
-  // Prepare audio after the visitor clicks Start Game
-  prepareScream();
-
-  clearTimeout(timer);
-  clearTimeout(hideTimer);
-  clearInterval(countdownTimer);
-
-  hideTimer = setTimeout(() => {
+  setTimeout(() => {
     document.getElementById("sequence").textContent = "????";
+    document.getElementById("timer").textContent = "30 seconds remaining";
+
+    seconds = 30;
+
+    countdown = setInterval(() => {
+      seconds--;
+      document.getElementById("timer").textContent =
+        seconds + " seconds remaining";
+
+      if (seconds <= 0) {
+        clearInterval(countdown);
+        document.getElementById("message").textContent =
+          "Time is up! Try again.";
+      }
+    }, 1000);
   }, 3000);
-
-  countdownTimer = setInterval(() => {
-    timeLeft--;
-
-    document.getElementById("countdown").textContent =
-      "Time left: " + timeLeft;
-
-    if (timeLeft <= 0) {
-      clearInterval(countdownTimer);
-      jumpscare();
-    }
-  }, 1000);
 }
 
 function checkAnswer() {
-  if (triggered) return;
+  const answer = document.getElementById("answer").value;
 
-  const answer = document.getElementById("answer").value.trim();
-
-  if (answer === sequence) {
+  if (answer === "4829") {
+    clearInterval(countdown);
     jumpscare();
   } else {
-    document.getElementById("result").textContent =
+    document.getElementById("message").textContent =
       "Not quite! Try again.";
   }
 }
+
 function jumpscare() {
-  if (triggered) return;
+  document.getElementById("game").style.display = "none";
+  document.getElementById("scare").style.display = "flex";
 
-  triggered = true;
-
-  clearTimeout(timer);
-  clearTimeout(hideTimer);
-  clearInterval(countdownTimer);
-
-  document.getElementById("normal").style.display = "none";
-
-  const scare = document.getElementById("scare");
-  scare.style.display = "block";
-
-  scare.classList.remove("flash");
-  void scare.offsetWidth;
-  scare.classList.add("flash");
-
-  document.getElementById("replay").style.display = "none";
-
-  makeScream();
+  const audio = document.getElementById("scream");
+  audio.volume = 0.8;
+  audio.currentTime = 0;
+  audio.play().catch(() => {});
 
   setTimeout(() => {
-    document.getElementById("replay").style.display = "block";
+    document.getElementById("again").style.display = "block";
   }, 2500);
 }
 
-function restart() {
-  triggered = false;
-
-  clearTimeout(timer);
-  clearTimeout(hideTimer);
-  clearInterval(countdownTimer);
-
+function resetGame() {
+  clearInterval(countdown);
   document.getElementById("scare").style.display = "none";
-  document.getElementById("replay").style.display = "none";
-
-  document.getElementById("normal").style.display = "flex";
+  document.getElementById("again").style.display = "none";
   document.getElementById("welcome").style.display = "block";
-  document.getElementById("gamePanel").style.display = "none";
+
+  const audio = document.getElementById("scream");
+  audio.pause();
+  audio.currentTime = 0;
 }
-
-document.getElementById("answer").addEventListener("keydown", function(event) {
-  if (event.key === "Enter") {
-    checkAnswer();
-  }
-});
 </script>
-
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-<script>
-  const SUPABASE_URL = "https://ztqasgxokizmknccrcyp.supabase.co";
-  const SUPABASE_KEY = "sb_publishable_sHRkKZNNEv8x_E_70NONiw__qMAmOpG";
-
-  const supabaseClient = window.supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_KEY
-  );
-
-  console.log("Supabase connected!");
-</script>
-
-  <div id="login-screen" style="
-  position:fixed; inset:0; z-index:99999;
-  background:#090b16; color:white;
-  display:flex; align-items:center; justify-content:center;
-  font-family:Arial,sans-serif; padding:20px;
-">
-  <div style="max-width:360px;width:100%;text-align:center">
-    <h1>PROJECT UNKNOWN</h1>
-    <p>Sign in with your email to continue.</p>
-
-    <input id="login-email" type="email"
-      placeholder="Enter your email"
-      style="width:100%;box-sizing:border-box;padding:14px;
-      border-radius:8px;border:0;margin:15px 0">
-
-    <button id="login-button"
-      style="width:100%;padding:14px;border:0;
-      border-radius:8px;background:#7655ff;
-      color:white;font-weight:bold">
-      SEND VERIFICATION LINK
-    </button>
-
-    <p id="login-message" style="font-size:14px"></p>
-  </div>
-</div>
-
-<script>
-(async function () {
-  const screen = document.getElementById("login-screen");
-  const message = document.getElementById("login-message");
-  const button = document.getElementById("login-button");
-
-  const { data: { session } } =
-    await supabaseClient.auth.getSession();
-
-  if (session) {
-    screen.style.display = "none";
-    await supabaseClient.from("visits").insert({
-      user_id: session.user.id
-    });
-  }
-
-  button.addEventListener("click", async () => {
-    const email = document.getElementById("login-email").value.trim();
-
-    if (!email) {
-      message.textContent = "Please enter your email.";
-      return;
-    }
-
-    button.disabled = true;
-    message.textContent = "Sending verification link...";
-
-    const { error } = await supabaseClient.auth.signInWithOtp({
-      email,
-      options: {
-        emailRedirectTo: window.location.href
-      }
-    });
-
-    message.textContent = error
-      ? error.message
-      : "Check your email for your sign-in link!";
-
-    button.disabled = false;
-  });
-
-  supabaseClient.auth.onAuthStateChange(async (event, session) => {
-    if (event === "SIGNED_IN" && session) {
-      screen.style.display = "none";
-      await supabaseClient.from("visits").insert({
-        user_id: session.user.id
-      });
-    }
-  });
-})();
-</script>
-
-<section id="admin-panel" style="
-  display:none;
-  position:fixed; inset:0; z-index:100000;
-  overflow:auto; background:#090b16;
-  color:white; padding:25px;
-  font-family:Arial,sans-serif;
-">
-  <h1>PROJECT UNKNOWN — ADMIN</h1>
-  <p>Private administrator dashboard</p>
-
-  <h2 id="visitor-count">Registered visitors: Loading...</h2>
-  <h2 id="visit-count">Recorded visits: Loading...</h2>
-  <h2>Visitors</h2>
-  <div id="visitor-list">Loading...</div>
-
-  <h2>Reviews</h2>
-  <div id="review-list">Loading...</div>
-
-  <button onclick="document.getElementById('admin-panel').style.display='none'">
-    Close admin panel
-  </button>
-</section>
-
-<script>
-(async function () {
-  const panel = document.getElementById("admin-panel");
-
-  const { data: { session } } =
-    await supabaseClient.auth.getSession();
-
-  if (!session) return;
-
-  const { data: isAdmin, error: adminError } =
-    await supabaseClient.rpc("is_admin");
-
-  if (adminError || !isAdmin) return;
-
-  panel.style.display = "block";
-
-  const { data: visitors } =
-    await supabaseClient.from("visitors").select("*");
-
-  const { data: visits } =
-    await supabaseClient.from("visits").select("*");
-
-  const { data: reviews } =
-    await supabaseClient.from("reviews").select("*");
-
-  document.getElementById("visitor-count").textContent =
-    "Registered visitors: " + (visitors?.length || 0);
-
-  document.getElementById("visit-count").textContent =
-    "Recorded visits: " + (visits?.length || 0);
-
-  document.getElementById("visitor-list").textContent =
-    visitors?.map(v => v.email || "No email").join("\n") ||
-    "No visitors yet.";
-
-  document.getElementById("visitor-list").style.whiteSpace = "pre-wrap";
-
-  document.getElementById("review-list").textContent =
-    reviews?.map(r =>
-      "Rating: " + r.rating + "/5\n" +
-      "Review: " + r.review_text + "\n" +
-      "User ID: " + r.user_id
-    ).join("\n\n") || "No reviews yet.";
-})();
-</script>
-
 
 </body>
 </html>

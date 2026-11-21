@@ -272,19 +272,12 @@ function checkAnswer() {
   const answer = document.getElementById("answer").value.trim();
 
   if (answer === sequence) {
-    document.getElementById("result").textContent =
-      "Correct! Excellent memory!";
-
-    clearInterval(countdownTimer);
-
-    timer = setTimeout(jumpscare, 2500);
-
+    jumpscare();
   } else {
     document.getElementById("result").textContent =
       "Not quite! Try again.";
   }
 }
-
 function jumpscare() {
   if (triggered) return;
 

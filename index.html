@@ -95,9 +95,11 @@ input {
 }
 
 #ghost {
-  max-width: 100%;
-  max-height: 65vh;
-  object-fit: contain;
+  width: 100vw;
+  height: 100vh;
+  max-width: none;
+  max-height: none;
+  object-fit: cover;
 }
 
 #scare h1 {
@@ -130,7 +132,6 @@ input {
 
 <div id="scare">
   <img id="ghost" src="ghost.jpg" alt="Ghost">
-  <h1>YOU FOUND IT.</h1>
   <button id="again" style="display:none;max-width:300px"
     onclick="resetGame()">TRY AGAIN</button>
 </div>

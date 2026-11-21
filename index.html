@@ -341,6 +341,85 @@ document.getElementById("answer").addEventListener("keydown", function(event) {
   console.log("Supabase connected!");
 </script>
 
+  <div id="login-screen" style="
+  position:fixed; inset:0; z-index:99999;
+  background:#090b16; color:white;
+  display:flex; align-items:center; justify-content:center;
+  font-family:Arial,sans-serif; padding:20px;
+">
+  <div style="max-width:360px;width:100%;text-align:center">
+    <h1>PROJECT UNKNOWN</h1>
+    <p>Sign in with your email to continue.</p>
+
+    <input id="login-email" type="email"
+      placeholder="Enter your email"
+      style="width:100%;box-sizing:border-box;padding:14px;
+      border-radius:8px;border:0;margin:15px 0">
+
+    <button id="login-button"
+      style="width:100%;padding:14px;border:0;
+      border-radius:8px;background:#7655ff;
+      color:white;font-weight:bold">
+      SEND VERIFICATION LINK
+    </button>
+
+    <p id="login-message" style="font-size:14px"></p>
+  </div>
+</div>
+
+<script>
+(async function () {
+  const screen = document.getElementById("login-screen");
+  const message = document.getElementById("login-message");
+  const button = document.getElementById("login-button");
+
+  const { data: { session } } =
+    await supabaseClient.auth.getSession();
+
+  if (session) {
+    screen.style.display = "none";
+    await supabaseClient.from("visits").insert({
+      user_id: session.user.id
+    });
+  }
+
+  button.addEventListener("click", async () => {
+    const email = document.getElementById("login-email").value.trim();
+
+    if (!email) {
+      message.textContent = "Please enter your email.";
+      return;
+    }
+
+    button.disabled = true;
+    message.textContent = "Sending verification link...";
+
+    const { error } = await supabaseClient.auth.signInWithOtp({
+      email,
+      options: {
+        emailRedirectTo: window.location.href
+      }
+    });
+
+    message.textContent = error
+      ? error.message
+      : "Check your email for your sign-in link!";
+
+    button.disabled = false;
+  });
+
+  supabaseClient.auth.onAuthStateChange(async (event, session) => {
+    if (event === "SIGNED_IN" && session) {
+      screen.style.display = "none";
+      await supabaseClient.from("visits").insert({
+        user_id: session.user.id
+      });
+    }
+  });
+})();
+</script>
+
+
 </body>
 </html>
 

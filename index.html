@@ -219,7 +219,7 @@ function makeScream() {
     const volume = audioContext.createGain();
 
     source.buffer = screamBuffer;
-    volume.gain.value = 0.8;
+    volume.gain.value = 1.0;
 
     source.connect(volume);
     volume.connect(audioContext.destination);
